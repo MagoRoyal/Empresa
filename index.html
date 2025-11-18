@@ -1,99 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Leaders - Agenda Digital</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Leaders — Agenda Digital</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header class="topbar">
+    <h1 class="logo">📘 The Leaders</h1>
+    <button id="themeToggle" class="theme-btn" aria-pressed="false" title="Alternar tema">🌙</button>
+  </header>
 
-    <header class="topbar">
-        <h1 class="logo">📘 The Leaders</h1>
-        <button id="themeToggle" class="theme-btn">🌙</button>
-    </header>
+  <!-- Caixa de notificação (visual) -->
+  <div id="notify" class="notify" aria-live="polite" role="status"></div>
 
-    <div id="notify" class="notify">Mensagem aqui</div>
+  <main class="agenda-container">
+    <!-- Relógio & Despertador -->
+    <section class="clock-card panel">
+      <h2>🕒 Relógio — Horário de Brasília</h2>
+      <div id="clock" class="clock" aria-label="Horário de Brasília">00:00:00</div>
 
-    <main class="agenda-container">
+      <div class="alarm-area">
+        <label for="alarmHour">Hora:</label>
+        <select id="alarmHour" aria-label="Hora do despertador"></select>
+        :
+        <select id="alarmMinute" aria-label="Minuto do despertador"></select>
 
-        <!-- Relógio -->
-        <section class="clock-card">
-            <h2 class="agenda-title">🕒 Relógio - Horário de Brasília</h2>
-            <div id="clock" class="clock">00:00:00</div>
+        <button id="setAlarm" class="btn">Ativar</button>
+        <button id="clearAlarm" class="btn ghost">Cancelar</button>
+      </div>
+    </section>
 
-            <div class="alarm-area">
-                <h3>⏰ Despertador</h3>
-                <select id="alarmHour"></select> :
-                <select id="alarmMinute"></select>
-                <button id="setAlarm" class="add-btn">Ativar</button>
-                <button id="clearAlarm" class="clear-btn small">Cancelar</button>
-            </div>
-        </section>
+    <!-- Agenda / To-do -->
+    <section class="agenda-wrapper panel">
+      <h2>Agenda Digital Profissional</h2>
+      <p class="muted">Anote tarefas, compromissos e lembretes. Tudo salvo localmente no seu navegador.</p>
 
-        <!-- Agenda -->
-        <section class="agenda-wrapper">
-            <h2 class="agenda-title">Agenda Digital Profissional</h2>
+      <div class="input-area">
+        <input id="taskInput" type="text" placeholder="O que você quer anotar?" aria-label="Nova tarefa">
+        <button id="addBtn" class="add-btn">Adicionar</button>
+      </div>
 
-            <div class="input-area">
-                <input id="taskInput" type="text" placeholder="Digite uma nova tarefa...">
-                <button id="addBtn" class="add-btn">Adicionar</button>
-            </div>
+      <ul id="taskList" class="task-list" aria-live="polite" aria-label="Lista de tarefas"></ul>
 
-            <ul id="taskList" class="task-list"></ul>
+      <div class="controls">
+        <button id="clearDone" class="btn ghost">Remover concluídas</button>
+        <button id="clearAll" class="btn danger">Limpar tudo</button>
+      </div>
+    </section>
 
-            <button id="clearAll" class="clear-btn">Limpar tudo</button>
-        </section>
+    <!-- Info empresa -->
+    <aside class="info-card panel">
+      <h3>Sobre a The Leaders</h3>
+      <p><strong>Missão:</strong> Facilitar sua organização.</p>
+      <p><strong>Visão:</strong> Ser referência em soluções de agendas digitais.</p>
+      <p><strong>Organograma:</strong> Rodrigo & Carol</p>
+    </aside>
+  </main>
 
-        <section class="info-card">
-            <h2>Sobre a Empresa</h2>
-            <p><strong>Missão:</strong> Facilitar sua organização.</p>
-            <p><strong>Visão:</strong> Ser referência em soluções organizacionais.</p>
-            <p><strong>Valores:</strong> Inovação, Organização, Responsabilidade.</p>
-            <p><strong>Organograma:</strong> Rodrigo e Carol.</p>
-        </section>
+  <!-- Áudios (externos) -->
+  <audio id="notifSound" preload="auto" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4fa30f2e74.mp3?filename=click-124467.mp3"></audio>
+  <audio id="alarmSound" preload="auto" src="https://cdn.pixabay.com/download/audio/2021/09/20/audio_1c46a1e0a4.mp3?filename=alarm-frenzy-105690.mp3"></audio>
 
-    </main>
-
-    <audio id="notifSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4fa30f2e74.mp3?filename=click-124467.mp3"></audio>
-    <audio id="alarmSound" src="https://cdn.pixabay.com/download/audio/2021/09/20/audio_1c46a1e0a4.mp3?filename=alarm-frenzy-105690.mp3"></audio>
-
-    <script src="script.js"></script>
-</body>
-</html></header>
-
-<main class="container">
-  <section class="panel about">
-    <h2>Sobre • The Leaders</h2>
-    <p class="muted">Missão: <strong>Facilitar sua organização</strong>. Visão: Ser referência em soluções que otimizem o dia a dia. Valores: Inovação • Transparência • Organização • Responsabilidade.</p>
-    <div class="org">
-      <div class="person">Rodrigo<br><span class="muted">Co-fundador</span></div>
-      <div class="person">Carol<br><span class="muted">Co-fundadora</span></div>
-    </div>
-  </section>
-
-  <section class="panel todo">
-    <h2>Minha Lista — Protótipo</h2>
-    <form id="todoForm" class="todo-form">
-      <input id="taskInput" placeholder="O que você quer anotar?" aria-label="Nova tarefa" required>
-      <button type="submit" class="add-btn">Adicionar</button>
-    </form>
-
-    <ul id="tasks" class="tasks" aria-live="polite"></ul>
-
-    <div class="todo-controls">
-      <button id="clearDone" class="ghost">Remover concluídas</button>
-      <button id="clearAll" class="danger ghost">Limpar tudo</button>
-    </div>
-
-    <p class="muted small">Dica: as tarefas ficam salvas no seu navegador.</p>
-  </section>
-</main>
-
-<footer class="footer">
-  <div>The Leaders — Rodrigo & Carol • Protótipo funcional</div>
-</footer>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
