@@ -1,40 +1,110 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Elementos
-  const taskInput = document.getElementById("taskInput");
-  const addBtn = document.getElementById("addBtn");
-  const taskList = document.getElementById("taskList");
-  const clearDone = document.getElementById("clearDone");
-  const clearAll = document.getElementById("clearAll");
+document.addEventListener("DOMContentLoaded", () => {
 
-  const notifSound = document.getElementById("notifSound");
-  const alarmSound = document.getElementById("alarmSound");
+  const notify = (msg) => {
+    const box = document.getElementById("notify");
+    box.textContent = msg;
+    box.classList.add("show");
+    setTimeout(() => box.classList.remove("show"), 2000);
+  };
+
+  // Tema
   const themeToggle = document.getElementById("themeToggle");
-  const notifyBox = document.getElementById("notify");
+  themeToggle.onclick = () => {
+    document.body.classList.toggle("dark");
+    themeToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    notify("Tema alterado");
+  };
 
-  const clockEl = document.getElementById("clock");
+  // Sons
+  const clickSound = document.getElementById("clickSound");
+  const alarmSound = document.getElementById("alarmSound");
+
+  // Relógio
+  function atualizarRelogio() {
+    const agora = new Date();
+    const fmt = agora.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo" });
+    document.getElementById("clock").textContent = fmt;
+  }
+  setInterval(atualizarRelogio, 1000);
+  atualizarRelogio();
+
+  // Preencher selects
   const alarmHour = document.getElementById("alarmHour");
   const alarmMinute = document.getElementById("alarmMinute");
-  const setAlarm = document.getElementById("setAlarm");
-  const clearAlarm = document.getElementById("clearAlarm");
+  for (let i = 0; i < 24; i++) alarmHour.innerHTML += `<option>${String(i).padStart(2,"0")}</option>`;
+  for (let i = 0; i < 60; i++) alarmMinute.innerHTML += `<option>${String(i).padStart(2,"0")}</option>`;
 
-  // Segurança: checar existência
-  if (!taskList || !addBtn || !taskInput || !notifyBox || !clockEl) {
-    console.error("Elemento crucial não encontrado no DOM.");
-    return;
-  }
+  let alarmTime = null;
 
-  // Notificação visual
-  function notify(msg, color = null) {
-    notifyBox.textContent = msg;
-    notifyBox.style.background = color || getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#5a55ff';
-    notifyBox.classList.add('show');
-    setTimeout(() => notifyBox.classList.remove('show'), 2400);
-  }
+  document.getElementById("setAlarm").onclick = () => {
+    alarmTime = `${alarmHour.value}:${alarmMinute.value}`;
+    notify("Alarme ativado");
+  };
 
-  // Som: tenta tocar o <audio>, se falhar usa WebAudio beep
-  function playSound(audioEl) {
-    if (!audioEl) return;
-    audioEl.play().catch(() => {
+  document.getElementById("clearAlarm").onclick = () => {
+    alarmTime = null;
+    notify("Alarme cancelado");
+  };
+
+  setInterval(() => {
+    if (!alarmTime) return;
+    const agora = new Date();
+    const h = String(agora.getHours()).padStart(2, "0");
+    const m = String(agora.getMinutes()).padStart(2, "0");
+    if (`${h}:${m}` === alarmTime) {
+      alarmSound.play();
+      notify("⏰ Alarme!");
+      alarmTime = null;
+    }
+  }, 1000);
+
+  // Tarefas
+  const taskList = document.getElementById("taskList");
+  let tasks = [];
+
+  const render = () => {
+    taskList.innerHTML = "";
+    tasks.forEach((t, i) => {
+      const li = document.createElement("li");
+      li.className = "task";
+      li.innerHTML = `
+        <span>${t}</span>
+        <button onclick="removeTask(${i})">🗑️</button>
+      `;
+      taskList.appendChild(li);
+    });
+  };
+
+  window.removeTask = (i) => {
+    tasks.splice(i, 1);
+    render();
+    clickSound.play();
+    notify("Tarefa removida");
+  };
+
+  document.getElementById("addBtn").onclick = () => {
+    const val = document.getElementById("taskInput").value.trim();
+    if (!val) return notify("Digite algo!");
+    tasks.push(val);
+    document.getElementById("taskInput").value = "";
+    render();
+    clickSound.play();
+    notify("Tarefa adicionada");
+  };
+
+  document.getElementById("clearAll").onclick = () => {
+    tasks = [];
+    render();
+    notify("Tudo apagado");
+  };
+
+  document.getElementById("clearDone").onclick = () => {
+    tasks = [];
+    render();
+    notify("Concluídas removidas");
+  };
+
+});    audioEl.play().catch(() => {
       // fallback simples: beep
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
